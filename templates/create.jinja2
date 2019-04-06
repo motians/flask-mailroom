@@ -5,8 +5,8 @@
 {% block content %}
 <form method="POST">
     {% if error %}<p>{{ error }}</p>{% endif %}
-    <label for="name">Donor name: </label><input type="text" id="name" name="name">
-    <label for="value">Donation amount: </label><input type="number" id="value" name="value">
+    <label for="name">Donor name: </label><input type="text" id="name" name="name"><br>
+    <label for="value">Donation amount: </label><input type="number" id="value" name="value"><br>
     <input type="submit" value="Create Donation">
 </form>
 {% endblock content %}
