@@ -25,9 +25,39 @@ def all():
     return render_template('donations.jinja2', donations=donations)
 
 
+@app.route('/allfordonor/', methods=['GET', 'POST'])
+def allfordonor():
+    """ Function to get donor name and obtain list of donations """
+
+    if request.method == 'POST':
+        try:
+            donor_lookup = Donor.select().where(Donor.name == request.form['name']).get()
+            donations = Donation.select().where(Donation.donor == donor_lookup)
+            donation_list = [donation.value for donation in donations]
+
+            session['donations'] = donation_list
+            session['donor_name'] = request.form['name']
+
+            return redirect(url_for('displaydonordonations'))
+        except peewee.DoesNotExist:
+            return render_template('allfordonor.jinja2', error='Donor not found.')
+
+    return render_template('allfordonor.jinja2')
+
+
+@app.route('/displaydonordonations/')
+def displaydonordonations():
+    """ Displays list of donations for donor """
+
+    return render_template('displaydonordonations.jinja2', donations=session['donations'], name=session['donor_name'])
+
+
 @app.route('/create/', methods=['GET', 'POST'])
 def create():
-    """ Function for creating donation """
+    """
+    Function for creating new donation
+    User must be signed in
+    """
 
     if 'username' not in session:
         return redirect(url_for('login'))
@@ -60,6 +90,7 @@ def login():
             return render_template('login.jinja2', error='Login failure.')
 
     return render_template('login.jinja2')
+
 
 
 if __name__ == "__main__":
