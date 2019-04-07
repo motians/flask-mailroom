@@ -86,6 +86,8 @@ def login():
             if got_user and pbkdf2_sha256.verify(request.form['password'], got_user.password):
                 session['username'] = request.form['name']
                 return redirect(url_for('create'))
+            else:
+                return render_template('login.jinja2', error='Login failure.')
         except peewee.DoesNotExist:
             return render_template('login.jinja2', error='Login failure.')
 
